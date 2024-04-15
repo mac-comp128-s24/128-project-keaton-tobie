@@ -1,25 +1,45 @@
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
-public class Piece implements Movable {
+public abstract class Piece {
     private Player player;
-    private Tile tile;
+    private Set<Tile> moves;
+    private Set<Tile> captures;
+    private Set<Tile> promotions;
 
-    public Piece(Player player, Tile tile) {
-        this.player = player;
-        this.tile = tile;
+    public Player getPlayer() {
+        return player;
     }
 
-    @Override
-    public Set<Tile> validMoves() {
-        
-        return null;
+    private Set<Tile> validMoves(Tile t) {
+        Set<Tile> potentialMoves = t.moves(moves);
+        Set<Tile> validatedMoves = player.getBoard().validate(potentialMoves);
+        return validatedMoves;
     }
 
-    @Override
-    public Set<Tile> validCaptures() {
-       return null;
+    private Set<Tile> validCaptures(Tile t) {
+        Set<Tile> potentialCaptures = t.moves(captures);
+        Set<Tile> validatedCaptures = player.getBoard().validate(potentialCaptures);
+        return validatedCaptures;
     }
 
-    
-    // Additional methods as needed for piece functionality
+    public Map<Tile, MoveType> movesFrom(Tile t) {
+        Map<Tile, MoveType> legalMoves = new HashMap<>();
+        Set<Tile> validMoves = validMoves(t);
+        Set<Tile> validCaptures = validCaptures(t);
+        for (Tile move : validMoves) {
+            legalMoves.put(move,MoveType.MOVE);
+            if (promotions.contains(move)) {
+                legalMoves.put(move,MoveType.PROMOTION);
+            }
+        }
+        for (Tile capture : validCaptures) {
+            legalMoves.put(capture,MoveType.CAPTURE);
+            if (promotions.contains(capture)) {
+                legalMoves.put(capture,MoveType.PROMOTION);
+            }
+        }
+        return legalMoves;
+    }
 }

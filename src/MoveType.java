@@ -1,4 +1,5 @@
 public enum MoveType {
-    REGULAR,
-    JUMP
+    MOVE,
+    CAPTURE,
+    PROMOTION
 }
