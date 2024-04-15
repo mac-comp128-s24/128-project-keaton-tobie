@@ -1,4 +1,6 @@
+import java.util.Set;
+
 public interface Movable {
-    public HashSet<Tile> validMoves();
-    public HashSet<Tile> validCaptures();
+    public Set<Tile> validMoves();
+    public Set<Tile> validCaptures();
 }

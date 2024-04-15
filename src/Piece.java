@@ -1,11 +1,23 @@
-public class Piece {
-    private PlayerColor color;
-    private boolean isKing;
+import java.util.Set;
 
-    public Piece(PlayerColor color, int row, int col) implements Movable {
-        this.type = type;
-        this.color = color;
-        this.tile = tile
+public class Piece implements Movable {
+    private Player player;
+    private Tile tile;
+
+    public Piece(Player player, Tile tile) {
+        this.player = player;
+        this.tile = tile;
+    }
+
+    @Override
+    public Set<Tile> validMoves() {
+        
+        return null;
+    }
+
+    @Override
+    public Set<Tile> validCaptures() {
+       return null;
     }
 
     
