@@ -33,8 +33,6 @@ public class Tile {
         Tile moved = new Tile(movedCol,movedRow);
         return moved;
     }
-
-    
     /**
      * moves the tile by each of amounts, returning a set of moves
      * @param amounts A set of tiles to move by

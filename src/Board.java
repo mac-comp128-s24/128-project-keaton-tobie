@@ -108,13 +108,13 @@ public class Board {
         Set<Tile> unobstructedMoves = new HashSet<>();
         for (Tile move : moves) {
             Set<Tile> potentialObstruction = t.movesBetween(move);
-            if (unObstructed(potentialObstruction)) {
+            if (unobstructed(potentialObstruction)) {
                 unobstructedMoves.add(move);
             }
         }
         return unobstructedMoves;
     }
-    public boolean unObstructed(Set<Tile> moves) {
+    public boolean unobstructed(Set<Tile> moves) {
         for (Tile m : moves) {
             if (occupied(m)) {
                 return false;

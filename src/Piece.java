@@ -3,10 +3,10 @@ import java.util.Map;
 import java.util.Set;
 
 public abstract class Piece {
-    private Player player;
-    private Set<Tile> moves;
-    private Set<Tile> captures;
-    private Set<Tile> promotions;
+    protected Player player;
+    protected Set<Tile> moves;
+    protected Set<Tile> captures;
+    protected Set<Tile> promotions;
 
     public Player getPlayer() {
         return player;
@@ -16,14 +16,14 @@ public abstract class Piece {
         player = p;
     }
 
-    private Set<Tile> validMoves(Tile t) {
+    protected Set<Tile> validMoves(Tile t) {
         Set<Tile> potentialMoves = t.moves(moves);
         Set<Tile> validatedMoves = player.getBoard().validate(potentialMoves);
-        Set<Tile> unObstructedMoves = player.getBoard().pruneObstructed(t, validatedMoves);
-        return unObstructedMoves;
+        Set<Tile> unobstructedMoves = player.getBoard().pruneObstructed(t, validatedMoves);
+        return unobstructedMoves;
     }
 
-    private Set<Tile> validCaptures(Tile t) {
+    protected Set<Tile> validCaptures(Tile t) {
         Set<Tile> potentialCaptures = t.moves(captures);
         Set<Tile> validatedCaptures = player.getBoard().validate(potentialCaptures);
         return validatedCaptures;
