@@ -44,11 +44,20 @@ public class Board {
         tilesToPieces.put(t, p);
     }
 
-    public Piece getPiece(Move move) {
-        return tilesToPieces.get(move);
+    /**
+     * gets the piece at tile (null if there is no piece)
+     * @param t Tile to get piece from
+     * @return piece, or null
+     */
+    public Piece getPiece(Tile t) {
+        return tilesToPieces.get(t);
     }
 
-    public Set<Tile> getTilesWithPieces(Tile t) {
+    /**
+     * gets the set of tiles that have pieces
+     * @return set of tiles with non null pieces
+     */
+    public Set<Tile> getTilesWithPieces() {
         return tilesToPieces.keySet();
     }
 
@@ -99,13 +108,13 @@ public class Board {
         Set<Tile> unobstructedMoves = new HashSet<>();
         for (Tile move : moves) {
             Set<Tile> potentialObstruction = t.movesBetween(move);
-            if (unObstructed(potentialObstruction)) {
+            if (unobstructed(potentialObstruction)) {
                 unobstructedMoves.add(move);
             }
         }
         return unobstructedMoves;
     }
-    public boolean unObstructed(Set<Tile> moves) {
+    public boolean unobstructed(Set<Tile> moves) {
         for (Tile m : moves) {
             if (occupied(m)) {
                 return false;
