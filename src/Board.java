@@ -44,8 +44,8 @@ public class Board {
         tilesToPieces.put(t, p);
     }
 
-    public Piece getPiece(Tile t) {
-        return tilesToPieces.get(t);
+    public Piece getPiece(Move move) {
+        return tilesToPieces.get(move);
     }
 
     public Set<Tile> getTilesWithPieces(Tile t) {

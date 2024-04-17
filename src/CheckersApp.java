@@ -1,52 +1,93 @@
-import java.util.Scanner;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
-public class CheckersApp {
+public class CheckersApp extends JPanel {
     private Board board;
     private GameManager gameManager;
-    private Scanner scanner;
+    private Player currentPlayer;
+    private Tile selectedTile;
+    private boolean gameStarted;
 
     public CheckersApp() {
         this.board = new Board();
         this.gameManager = new GameManager(board);
-        this.scanner = new Scanner(System.in);
+        this.currentPlayer = Player.PLAYER_ONE; // Assume player one starts the game
+        this.selectedTile = null; // Initially no tile is selected
+        this.gameStarted = false; // Game starts when player selects a mode
+        setPreferredSize(new Dimension(600, 600)); // Set preferred size for the panel
+        setBackground(Color.WHITE); // Set background color
+        setFocusable(true); // Allow panel to receive keyboard focus
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                handleMouseClick(e);
+            }
+        });
     }
 
-    public void startGame() {
-        System.out.println("Welcome to Checkers!");
-        board.initializeBoard(); // Initialize the game board
-
-        while (!gameManager.isGameOver()) {
-            board.displayBoard(); // Display the current state of the board
-
-            // Get input from the current player
-            Move move = getPlayerMove();
-
-            // Make the move
-            MoveResult result = gameManager.makeMove(move);
-
-            // Handle the result of the move
-            handleMoveResult(result);
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        // Draw the game board if game has started
+        if (gameStarted) {
+            board.draw(g);
+            // Draw pieces, player indicators, etc.
+            // You can use methods from the GameManager to get the current state of the game
+        } else {
+            // Draw the menu or mode selection screen
+            // You can implement this part as needed
         }
-
-        // Display the final state of the board
-        board.displayBoard();
-
-        // Display the winner or a draw
-        System.out.println("Game over. " + gameManager.getWinner() + " wins!");
     }
 
-    private Move getPlayerMove() {
-        // Implement logic to get move input from the player
-        // Return a Move object representing the player's move
-    }
+    private void handleMouseClick(MouseEvent e) {
+        if (!gameStarted) {
+            // Handle mode selection
+            // For example, if the player clicks on a button to select a mode:
+            // gameStarted = true;
+            // currentPlayer = // Set the current player based on the selected mode (e.g., bot or local player)
+            // board.initializeBoard(); // Set up the game board
+        } else {
+            // Translate mouse coordinates to board coordinates
+            int x = e.getX();
+            int y = e.getY();
+            int col = x / Board.TILE_SIZE;
+            int row = y / Board.TILE_SIZE;
+            Tile clickedTile = new Tile(row, col);
 
-    private void handleMoveResult(MoveResult result) {
-        // Implement logic to handle the result of the move
-        // This can include displaying messages to the user based on the result
+            if (selectedTile == null) {
+                // No tile is currently selected, check if the clicked tile contains the player's piece
+                if (board.getPiece(clickedTile) != null && board.getPiece(clickedTile).getPlayer() == currentPlayer) {
+                    selectedTile = clickedTile; // Set the clicked tile as the selected tile
+                }
+            } else {
+                // A tile is already selected, try to make a move
+                Move move = new Move(selectedTile, clickedTile);
+                if (gameManager.makeMove(move)) {
+                    // Move was successfully made, switch to the next player's turn
+                    currentPlayer = (currentPlayer == Player.PLAYER_ONE) ? Player.PLAYER_TWO : Player.PLAYER_ONE;
+                }
+                selectedTile = null; // Reset selected tile
+            }
+            // Repaint the panel to update the display
+            repaint();
+        }
     }
 
     public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> createAndShowGui());
+    }
+
+    private static void createAndShowGui() {
+        JFrame frame = new JFrame("Checkers Game");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         CheckersApp app = new CheckersApp();
-        app.startGame();
+        frame.add(app);
+        frame.pack(); // Pack components within the frame
+        frame.setLocationRelativeTo(null); // Center the frame on the screen
+        frame.setVisible(true);
     }
 }
+
+
+

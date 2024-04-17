@@ -2,6 +2,8 @@ import java.awt.Color;
 import java.util.Set;
 
 public class Player {
+    public static final Player PLAYER_TWO = null;
+    public static final Player PLAYER_ONE = null;
     private Set<Piece> pieces;
     private int playerNum;
     private Color color;
