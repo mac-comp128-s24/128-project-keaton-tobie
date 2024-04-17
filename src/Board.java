@@ -44,11 +44,20 @@ public class Board {
         tilesToPieces.put(t, p);
     }
 
+    /**
+     * gets the piece at tile (null if there is no piece)
+     * @param t Tile to get piece from
+     * @return piece, or null
+     */
     public Piece getPiece(Tile t) {
         return tilesToPieces.get(t);
     }
 
-    public Set<Tile> getTilesWithPieces(Tile t) {
+    /**
+     * gets the set of tiles that have pieces
+     * @return set of tiles with non null pieces
+     */
+    public Set<Tile> getTilesWithPieces() {
         return tilesToPieces.keySet();
     }
 
