@@ -2,7 +2,7 @@ import java.awt.Color;
 import java.util.Set;
 
 public class Player {
-    private Set<Pawn> pieces;
+    private Set<Piece> pieces;
     private int playerNum;
     private Color color;
     private Board board;
@@ -21,7 +21,24 @@ public class Player {
         return board;
     }
 
-    public boolean Equals(Player p){
+    public Color getColor() {
+        return color;
+    }
+
+    public Set<Piece> getPieces() {
+        return pieces;
+    }
+
+    public void addPiece(Piece p) {
+        p.setPlayer(this);
+        pieces.add(p);
+    }
+
+    public void removePiece(Piece p) {
+        pieces.remove(p);
+    }
+
+    public boolean Equals(Player p) {
         return (playerNum==p.getNum());
     }
 }

@@ -12,10 +12,15 @@ public abstract class Piece {
         return player;
     }
 
+    public void setPlayer(Player p) {
+        player = p;
+    }
+
     private Set<Tile> validMoves(Tile t) {
         Set<Tile> potentialMoves = t.moves(moves);
         Set<Tile> validatedMoves = player.getBoard().validate(potentialMoves);
-        return validatedMoves;
+        Set<Tile> unObstructedMoves = player.getBoard().pruneObstructed(t, validatedMoves);
+        return unObstructedMoves;
     }
 
     private Set<Tile> validCaptures(Tile t) {

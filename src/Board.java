@@ -1,6 +1,6 @@
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 
@@ -13,6 +13,28 @@ public class Board {
         tilesToPieces = new HashMap<>();
     }
 
+    public void initializeBoard() {
+        Player zero = new Player(0, Color.white, this);
+        Player one = new Player(0, Color.white, this);
+        for (int i = 0; i<12; i++) {
+            Pawn p = new Pawn();
+            zero.addPiece(p);
+            int row = i/4 + 1;
+            int col = i%4 + row%2;
+            Tile t = new Tile(row, col);
+            put(t, p);
+        }
+        for (int i = 0; i<12; i++) {
+            Pawn p = new Pawn();
+            one.addPiece(p);
+            int row = i/4 + 6;
+            int col = i%4 + row%2;
+            Tile t = new Tile(row, col);
+            put(t, p);
+        }
+    }
+
+
     /**
      * puts a Piece p at the Tile t, overwriting the prior piece
      * @param t Tile to put p at
@@ -20,6 +42,10 @@ public class Board {
      */
     public void put(Tile t, Pawn p) {
         tilesToPieces.put(t, p);
+    }
+
+    public Piece getPiece(Tile t) {
+        return tilesToPieces.get(t);
     }
 
     /**
@@ -59,5 +85,28 @@ public class Board {
         Pawn capturing = tilesToPieces.get(from);
         Pawn captured = tilesToPieces.get(to);
         return (capturing!=null&&captured!=null&&!capturing.getPlayer().equals(captured.getPlayer()));
+    }
+
+    public boolean occupied(Tile t) {
+        return (tilesToPieces.get(t)!=null);
+    }
+
+    public Set<Tile> pruneObstructed(Tile t, Set<Tile> moves) {
+        Set<Tile> unobstructedMoves = new HashSet<>();
+        for (Tile move : moves) {
+            Set<Tile> potentialObstruction = t.movesBetween(move);
+            if (unObstructed(potentialObstruction)) {
+                unobstructedMoves.add(move);
+            }
+        }
+        return unobstructedMoves;
+    }
+    public boolean unObstructed(Set<Tile> moves) {
+        for (Tile m : moves) {
+            if (occupied(m)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

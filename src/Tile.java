@@ -4,12 +4,14 @@ import java.util.Set;
 public class Tile {
     private int row;
     private int col;
-    private Board board;
 
     public Tile(int col, int row) {
         this.col = col;
         this.row = row;
-        board = new Board();
+    }
+
+    public boolean equals(Tile t) {
+        return col==t.getCol()&&row==t.getRow();
     }
 
     public int getRow() {
@@ -34,7 +36,7 @@ public class Tile {
 
     
     /**
-     * moves the by each of amounts, returning a set of moves
+     * moves the tile by each of amounts, returning a set of moves
      * @param amounts A set of tiles to move by
      * @return A set of moves from tile
      */
@@ -45,5 +47,25 @@ public class Tile {
             moves.add(moved);
         }
         return moves;
+    }
+
+    public Set<Tile> movesBetween(Tile t) {
+        Set<Tile> between = new HashSet<>();
+        int dCol = col-t.getCol();
+        int dRow = row-t.getRow();
+        if (dCol == 0) {
+            for (int i = 1; i < Math.abs(dRow); i++) {
+                between.add(t.move(new Tile(0, i*(int)Math.signum(dRow))));
+            }
+        } else if (dRow == 0) {
+            for (int i = 1; i < Math.abs(dCol); i++) {
+                between.add(t.move(new Tile(i*(int)Math.signum(dCol),0)));
+            }
+        } else if (Math.abs(dCol) == Math.abs(dRow)) {
+            for (int i = 1; i < Math.abs(dRow); i++) {
+                between.add(t.move(new Tile(i*(int)Math.signum(dCol), i*(int)Math.signum(dRow))));
+            }
+        }
+        return between;
     }
 }
