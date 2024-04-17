@@ -48,6 +48,10 @@ public class Board {
         return tilesToPieces.get(t);
     }
 
+    public Set<Tile> getTilesWithPieces(Tile t) {
+        return tilesToPieces.keySet();
+    }
+
     /**
      * removes the Tile at t
      * @param t Tile to remove the piece from
