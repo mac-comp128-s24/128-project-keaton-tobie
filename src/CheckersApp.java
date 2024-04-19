@@ -62,7 +62,7 @@ public class CheckersApp extends JPanel {
                 }
             } else {
                 // A tile is already selected, try to make a move
-                Move move = new Move(selectedTile, clickedTile);
+                Move move = new Move(null, selectedTile, clickedTile);
                 if (gameManager.makeMove(move)) {
                     // Move was successfully made, switch to the next player's turn
                     currentPlayer = (currentPlayer == Player.PLAYER_ONE) ? Player.PLAYER_TWO : Player.PLAYER_ONE;

@@ -8,9 +8,14 @@ public abstract class Piece {
     protected Set<Tile> captures;
     protected Set<Tile> promotions;
 
-    public Player getPlayer() {
-        return player;
+    // Constructor that accepts a Player argument
+    public Piece(Player player) {
+        this.player = player;
     }
+
+    // Other methods remain unchanged...
+}
+
 
     public void setPlayer(Player p) {
         player = p;
@@ -34,15 +39,15 @@ public abstract class Piece {
         Set<Tile> validMoves = validMoves(t);
         Set<Tile> validCaptures = validCaptures(t);
         for (Tile move : validMoves) {
-            legalMoves.put(move,MoveType.MOVE);
+            legalMoves.put(move, MoveType.MOVE);
             if (promotions.contains(move)) {
-                legalMoves.put(move,MoveType.PROMOTION);
+                legalMoves.put(move, MoveType.PROMOTION);
             }
         }
         for (Tile capture : validCaptures) {
-            legalMoves.put(capture,MoveType.CAPTURE);
+            legalMoves.put(capture, MoveType.CAPTURE);
             if (promotions.contains(capture)) {
-                legalMoves.put(capture,MoveType.PROMOTION);
+                legalMoves.put(capture, MoveType.PROMOTION);
             }
         }
         return legalMoves;

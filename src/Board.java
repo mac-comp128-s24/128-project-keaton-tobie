@@ -5,19 +5,17 @@ import java.util.Set;
 
 
 public class Board {
-    private HashMap<Tile, Pawn> tilesToPieces;
-    /**
-    * a representation of the current board, with static methods to get moves
-    */
+    private final HashMap<Tile, Pawn> tilesToPieces = new HashMap<>();
+    private final int tileSize = GameManager.getTileSize();
+
     public Board() {
-        tilesToPieces = new HashMap<>();
     }
 
     public void initializeBoard() {
-        Player zero = new Player(0, Color.white, this);
-        Player one = new Player(0, Color.white, this);
+        Player zero = new Player(0, Color.WHITE);
+        Player one = new Player(1, Color.BLACK);
         for (int i = 0; i<12; i++) {
-            Pawn p = new Pawn();
+            Pawn p = new Pawn(zero);
             zero.addPiece(p);
             int row = i/4 + 1;
             int col = i%4 + row%2;
@@ -25,7 +23,7 @@ public class Board {
             put(t, p);
         }
         for (int i = 0; i<12; i++) {
-            Pawn p = new Pawn();
+            Pawn p = new Pawn(one);
             one.addPiece(p);
             int row = i/4 + 6;
             int col = i%4 + row%2;
@@ -34,46 +32,22 @@ public class Board {
         }
     }
 
-
-    /**
-     * puts a Piece p at the Tile t, overwriting the prior piece
-     * @param t Tile to put p at
-     * @param p Piece to put at t
-     */
     public void put(Tile t, Pawn p) {
         tilesToPieces.put(t, p);
     }
 
-    /**
-     * gets the piece at tile (null if there is no piece)
-     * @param t Tile to get piece from
-     * @return piece, or null
-     */
-    public Piece getPiece(Tile t) {
+    public Pawn getPiece(Tile t) {
         return tilesToPieces.get(t);
     }
 
-    /**
-     * gets the set of tiles that have pieces
-     * @return set of tiles with non null pieces
-     */
     public Set<Tile> getTilesWithPieces() {
         return tilesToPieces.keySet();
     }
 
-    /**
-     * removes the Tile at t
-     * @param t Tile to remove the piece from
-     */
     public void remove(Tile t) {
         tilesToPieces.remove(t);
     }
 
-    /**
-     * determines if a tile is on the board
-     * @param t Tile to validate
-     * @return true if the tile is on the board
-     */
     public static boolean validate(Tile t) {
         return !(t.getCol()>8||t.getRow()<1||t.getRow()>8||t.getCol()<1);
     }
@@ -85,15 +59,9 @@ public class Board {
                 validTiles.add(t);
             }
         }
-        return tiles;
+        return validTiles;
     }
 
-    /**
-     * determines if from and to have pieces that belong to opposing players
-     * @param from the Tile to move from
-     * @param to the Tile to move to
-     * @return true if both pieces exist and the players are different
-     */
     public boolean opposed(Tile from, Tile to) {
         Pawn capturing = tilesToPieces.get(from);
         Pawn captured = tilesToPieces.get(to);
@@ -121,5 +89,28 @@ public class Board {
             }
         }
         return true;
+    }
+
+    public void draw(Graphics g) {
+        // Draw the board grid
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                // Draw each tile of the board
+                if ((row + col) % 2 == 0) {
+                    g.setColor(Color.WHITE);
+                } else {
+                    g.setColor(Color.BLACK);
+                }
+                g.fillRect(col * tileSize, row * tileSize, tileSize, tileSize);
+            }
+        }
+
+        // Draw pieces on the board
+        for (Tile tile : getTilesWithPieces()) {
+            Pawn piece = getPiece(tile);
+            // Draw the piece at the tile's position
+            // You need to implement this part based on your Piece class and graphics representation
+            piece.draw(g, tile);
+        }
     }
 }

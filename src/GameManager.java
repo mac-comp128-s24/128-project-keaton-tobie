@@ -11,12 +11,10 @@ public class GameManager {
         this.currentPlayer = Player.PLAYER_ONE; // Assume player one starts the game
     }
 
-    public int getTileSize() {
-        // You can implement logic here to get the tile size from the board
-        // For example, if the board has a constant tile size, you can directly return it
-        // If the tile size can vary or is calculated dynamically, you can implement the logic accordingly
-     // Assuming TILE_SIZE is a constant in Board
+    public static int getTileSize() {
+        return Tile.TILE_SIZE;
     }
+    
 
     public boolean makeMove(Move move) {
         // Validate the move
@@ -25,7 +23,7 @@ public class GameManager {
         }
 
         // Make the move on the board
-        board.getPiece(move);
+        move.getPiece();
 
         // Check for game over condition
         if (isGameOver()) {
@@ -68,7 +66,7 @@ public class GameManager {
     private Set<Move> generateAllPossibleMoves(Piece piece) {
         Set<Move> possibleMoves = new HashSet<>();
         // Get the tile position of the piece
-        Tile currentPosition = piece.getPosition();
+        Piece currentPosition = Move.getPiece();
         // Get all possible move amounts for the piece
         Set<Tile> moveAmounts = piece.getMoveAmounts();
         // Generate moves for each possible move amount
