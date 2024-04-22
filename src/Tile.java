@@ -2,6 +2,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import edu.macalester.graphics.Point;
+
 public class Tile {
     private int row;
     private int col;
@@ -14,6 +16,10 @@ public class Tile {
 
     public int getRow() {
         return row;
+    }
+
+    public Point getTileCenter() {
+        return new Point((row+.5)*TILE_SIZE , (row+.5)*TILE_SIZE);
     }
 
     public int getCol() {
