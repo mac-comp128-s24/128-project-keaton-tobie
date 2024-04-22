@@ -16,14 +16,7 @@ public class Player {
         this.color = color;
         this.pieces = new HashSet<>();
     }
-
-    // Constructor with Board parameter
-    public Player(int playerNum, Color color, Board board) {
-        this.playerNum = playerNum;
-        this.color = color;
-        this.pieces = new HashSet<>();
-        this.board = board;
-    }
+    
 
     // Setter method for Board
     public void setBoard(Board board) {

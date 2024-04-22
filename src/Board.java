@@ -31,7 +31,7 @@ public class Board {
             put(t, p);
         }
     }
-
+    
     public void put(Tile t, Pawn p) {
         tilesToPieces.put(t, p);
     }

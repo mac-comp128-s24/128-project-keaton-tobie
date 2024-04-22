@@ -66,9 +66,7 @@ public class CheckersApp extends JPanel {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> createAndShowGui());
-    }
+    
 
     private static void createAndShowGui() {
         JFrame frame = new JFrame("Checkers Game");
@@ -79,6 +77,10 @@ public class CheckersApp extends JPanel {
         frame.setLocationRelativeTo(null); // Center the frame on the screen
         frame.setVisible(true);
     }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> createAndShowGui());
+    }
+
 }
 
 

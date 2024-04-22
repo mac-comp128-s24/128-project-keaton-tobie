@@ -46,11 +46,23 @@ public class GameManager {
     }
 
     private boolean isGameOver() {
-        // Implement logic to check for game over condition
-        // For example, check if one player has no more pieces left or cannot make any legal moves
-        return false; // Placeholder
+        // Check if any player has no remaining pieces
+        boolean playerOneHasPieces = currentPlayerHasPieces(Player.PLAYER_ONE);
+        boolean playerTwoHasPieces = currentPlayerHasPieces(Player.PLAYER_TWO);
+    
+        if (!playerOneHasPieces || !playerTwoHasPieces) {
+            return true;
+        }
+          // If neither player has won and the current player cannot make any moves, it's a stalemate
+        return true;
     }
-
+    
+    private boolean currentPlayerHasPieces(Player player) {
+        Set<Piece> playerPieces = player.getPieces();
+        return !playerPieces.isEmpty();
+    }
+    
+            
     private void switchPlayer() {
         // Switch to the next player's turn
         currentPlayer = (currentPlayer == Player.PLAYER_ONE) ? Player.PLAYER_TWO : Player.PLAYER_ONE;
