@@ -16,7 +16,7 @@ public class Move {
     }
 
     public void setPiece(Piece piece) {
-        this.piece = piece;
+        Move.piece = piece;
     }
 
     public Tile getStart() {

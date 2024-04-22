@@ -23,7 +23,7 @@ public class GameManager {
         }
 
         // Make the move on the board
-        move.getPiece();
+        Move.getPiece();
 
         // Check for game over condition
         if (isGameOver()) {
@@ -63,24 +63,6 @@ public class GameManager {
      * @param piece The piece for which to generate moves
      * @return A set of all possible moves for the piece
      */
-    private Set<Move> generateAllPossibleMoves(Piece piece) {
-        Set<Move> possibleMoves = new HashSet<>();
-        // Get the tile position of the piece
-        Piece currentPosition = Move.getPiece();
-        // Get all possible move amounts for the piece
-        Set<Tile> moveAmounts = piece.getMoveAmounts();
-        // Generate moves for each possible move amount
-        for (Tile amount : moveAmounts) {
-            // Calculate the destination tile after the move
-            Tile destination = currentPosition.move(amount);
-            // Create a move object representing the move
-            Move move = new Move(piece, currentPosition, destination);
-            // Add the move to the set of possible moves
-            possibleMoves.add(move);
-        }
-        return possibleMoves;
-    }
-
     public Map<Tile, MoveType> getAllLegalMovesForPiece(Piece piece) {
         // Get the current position of the piece
         Tile currentPosition = piece.getPosition();

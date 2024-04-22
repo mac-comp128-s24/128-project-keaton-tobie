@@ -4,6 +4,8 @@ import java.util.Set;
 
 public abstract class Piece {
     protected Player player;
+    protected Tile position; // Add a field to represent the current position
+
     protected Set<Tile> moves;
     protected Set<Tile> captures;
     protected Set<Tile> promotions;
@@ -13,12 +15,18 @@ public abstract class Piece {
         this.player = player;
     }
 
-    // Other methods remain unchanged...
-}
-
-
     public void setPlayer(Player p) {
         player = p;
+    }
+
+    // Method to set the position of the piece
+    public void setPosition(Tile position) {
+        this.position = position;
+    }
+
+    // Method to get the position of the piece
+    public Tile getPosition() {
+        return position;
     }
 
     protected Set<Tile> validMoves(Tile t) {
@@ -51,5 +59,9 @@ public abstract class Piece {
             }
         }
         return legalMoves;
+    }
+
+    public Player getPlayer() {
+        return this.player;
     }
 }

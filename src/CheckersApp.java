@@ -30,45 +30,37 @@ public class CheckersApp extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         // Draw the game board if game has started
-        if (gameStarted) {
+        // if (gameStarted) {
             board.draw(g);
-            // Draw pieces, player indicators, etc.
-            // You can use methods from the GameManager to get the current state of the game
-        } else {
+        // } else {
             // Draw the menu or mode selection screen
             // You can implement this part as needed
-        }
+        // }
     }
 
     private void handleMouseClick(MouseEvent e) {
         if (!gameStarted) {
             // Handle mode selection
             // For example, if the player clicks on a button to select a mode:
-            // gameStarted = true;
+            gameStarted = true;
             // currentPlayer = // Set the current player based on the selected mode (e.g., bot or local player)
-            // board.initializeBoard(); // Set up the game board
+            board.initializeBoard(); // Set up the game board
         } else {
             // Translate mouse coordinates to board coordinates
             int x = e.getX();
             int y = e.getY();
-            int col = x / Board.TILE_SIZE;
-            int row = y / Board.TILE_SIZE;
+            int col = x / Tile.TILE_SIZE;
+            int row = y / Tile.TILE_SIZE;
             Tile clickedTile = new Tile(row, col);
-
-            if (selectedTile == null) {
-                // No tile is currently selected, check if the clicked tile contains the player's piece
-                if (board.getPiece(clickedTile) != null && board.getPiece(clickedTile).getPlayer() == currentPlayer) {
-                    selectedTile = clickedTile; // Set the clicked tile as the selected tile
-                }
-            } else {
-                // A tile is already selected, try to make a move
-                Move move = new Move(null, selectedTile, clickedTile);
-                if (gameManager.makeMove(move)) {
-                    // Move was successfully made, switch to the next player's turn
-                    currentPlayer = (currentPlayer == Player.PLAYER_ONE) ? Player.PLAYER_TWO : Player.PLAYER_ONE;
-                }
-                selectedTile = null; // Reset selected tile
-            }
+    
+            // Perform game logic here
+            // For example:
+            // if (selectedTile == null) {
+            //     // Handle selecting a piece
+            // } else {
+            //     // Handle moving the piece
+            // }
+    
             // Repaint the panel to update the display
             repaint();
         }

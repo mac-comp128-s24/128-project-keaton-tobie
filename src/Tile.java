@@ -5,7 +5,7 @@ import java.util.Set;
 public class Tile {
     private int row;
     private int col;
-    public static final int TILE_SIZE = 50; // Define the size of each tile (in pixels), adjust as needed
+    public static final int TILE_SIZE = 75; // Define the size of each tile (in pixels), adjust as needed
 
     public Tile(int col, int row) {
         this.col = col;

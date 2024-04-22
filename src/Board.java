@@ -2,7 +2,7 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-
+import java.awt.Graphics;
 
 public class Board {
     private final HashMap<Tile, Pawn> tilesToPieces = new HashMap<>();
@@ -12,7 +12,7 @@ public class Board {
     }
 
     public void initializeBoard() {
-        Player zero = new Player(0, Color.WHITE);
+        Player zero = new Player(0, Color.RED);
         Player one = new Player(1, Color.BLACK);
         for (int i = 0; i<12; i++) {
             Pawn p = new Pawn(zero);
@@ -65,8 +65,10 @@ public class Board {
     public boolean opposed(Tile from, Tile to) {
         Pawn capturing = tilesToPieces.get(from);
         Pawn captured = tilesToPieces.get(to);
-        return (capturing!=null&&captured!=null&&!capturing.getPlayer().equals(captured.getPlayer()));
+        // Check if both capturing and captured are not null, and they belong to different players
+        return (capturing != null && captured != null && !capturing.getPlayer().equals(captured.getPlayer()));
     }
+    
 
     public boolean occupied(Tile t) {
         return (tilesToPieces.get(t)!=null);
@@ -104,13 +106,26 @@ public class Board {
                 g.fillRect(col * tileSize, row * tileSize, tileSize, tileSize);
             }
         }
-
+    
         // Draw pieces on the board
         for (Tile tile : getTilesWithPieces()) {
-            Pawn piece = getPiece(tile);
-            // Draw the piece at the tile's position
-            // You need to implement this part based on your Piece class and graphics representation
-            piece.draw(g, tile);
+            int row = tile.getRow();
+            int col = tile.getCol();
+            if ((row + col) % 2 != 0) {
+                Pawn piece = getPiece(tile);
+                if (piece != null) {
+                    if (piece.getPlayer().equals(Player.PLAYER_ONE)) {
+                        g.setColor(Color.RED);
+                    } else {
+                        g.setColor(Color.BLACK);
+                    }
+                    // Adjust positioning to center the piece within the tile
+                    int x = col * tileSize + tileSize / 4; // Adjusted x coordinate
+                    int y = row * tileSize + tileSize / 4; // Adjusted y coordinate
+                    g.fillOval(x, y, tileSize / 2, tileSize / 2); // Draw the piece
+                }
+            }
         }
     }
+    
 }
