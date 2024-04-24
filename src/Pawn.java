@@ -34,7 +34,7 @@ public class Pawn implements Piece {
         }
     }
 
-    private Set<Tile> validMoves(Tile t) {
+    Set<Tile> validMoves(Tile t) {
         Set<Tile> potentialMoves = t.moves(moves);
         Set<Tile> validatedMoves = player.getBoard().validate(potentialMoves);
         Set<Tile> unobstructedMoves = player.getBoard().pruneObstructed(t, validatedMoves);

@@ -15,27 +15,7 @@ public class GameManager {
         return Tile.TILE_SIZE;
     }
     
-
-    public boolean makeMove(Move move) {
-        // Validate the move
-        if (!isValidMove(move)) {
-            return false;
-        }
-
-        // Make the move on the board
-        Move.getPiece();
-
-        // Check for game over condition
-        if (isGameOver()) {
-            // Handle game over
-            // You might display a message, declare the winner, etc.
-        } else {
-            // Switch to the next player's turn
-            switchPlayer();
-        }
-
-        return true;
-    }
+   
 
     private boolean isGameOver() {
         // Check if any player has no remaining pieces
@@ -67,11 +47,15 @@ public class GameManager {
      * @param piece The piece for which to generate moves
      * @return A set of all possible moves for the piece
      */
-    public Map<Tile, MoveType> getAllLegalMovesForPiece(Piece piece) {
+    public Set<Tile> getAllLegalMovesForTile(Tile tile) {
         // Get the current position of the piece
-        Tile currentPosition = piece.getPosition();
+        Piece currentpiece = board.getPiece(tile);
+        if(currentpiece.getPlayer() ==currentPlayer){
+            return currentpiece.getMoves();
+        }
         // Use the movesFrom method of the piece to get all legal moves from the current position
-        return piece.movesFrom(currentPosition);
+        return null;
+      
     }
 }
 

@@ -11,7 +11,7 @@ public class Move {
     }
 
     // Getters and setters
-    public static Piece getPiece() {
+    public Piece getPiece() {
         return piece;
     }
 
