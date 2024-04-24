@@ -14,6 +14,10 @@ public class GameManager {
     public static int getTileSize() {
         return Tile.TILE_SIZE;
     }
+
+    public void drawBoard() {
+        
+    }
     
    
 

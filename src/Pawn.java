@@ -17,6 +17,8 @@ public class Pawn implements Piece {
     private Ellipse ellipse;
 
     public Pawn(Player player) {
+        Ellipse e = new Ellipse(0,0,Tile.TILE_SIZE, Tile.TILE_SIZE);
+        ellipse = e;
         this.player = player; // Initialize the player field
         int playerNum = player.getNum();
         moves = new HashSet<>();
@@ -34,7 +36,7 @@ public class Pawn implements Piece {
         }
     }
 
-    Set<Tile> validMoves(Tile t) {
+    private Set<Tile> validMoves(Tile t) {
         Set<Tile> potentialMoves = t.moves(moves);
         Set<Tile> validatedMoves = player.getBoard().validate(potentialMoves);
         Set<Tile> unobstructedMoves = player.getBoard().pruneObstructed(t, validatedMoves);
@@ -73,12 +75,10 @@ public class Pawn implements Piece {
     }
 
     public GraphicsObject getGraphics() {
-        Ellipse e = new Ellipse(0,0,Tile.TILE_SIZE, Tile.TILE_SIZE);
-        e.setCenter(tile.getTileCenter());
-        e.setFillColor(player.getColor());
-        e.setStroked(false);
-        ellipse = e;
-        return e;
+        ellipse.setCenter(tile.getTileCenter());
+        ellipse.setFillColor(player.getColor());
+        ellipse.setStroked(false);
+        return ellipse;
     }
 
     public Tile getTile() {
@@ -108,8 +108,5 @@ public class Pawn implements Piece {
         player = p;
         ellipse.setFillColor(p.getColor());
     }
-
-
-
 }
 

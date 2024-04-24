@@ -2,16 +2,22 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+
+import edu.macalester.graphics.GraphicsGroup;
+
 import java.awt.Graphics;
 
 public class Board {
     private final HashMap<Tile, Pawn> tilesToPieces = new HashMap<>();
     private final int tileSize = GameManager.getTileSize();
+    private GraphicsGroup group;
 
     public Board() {
+        group = new GraphicsGroup();
+        initializeBoard();
     }
 
-    public void initializeBoard() {
+    private void initializeBoard() {
         Player zero = new Player(0, Color.RED);
         Player one = new Player(1, Color.BLACK);
         for (int i = 0; i<12; i++) {
@@ -21,6 +27,7 @@ public class Board {
             int col = i%4 + row%2;
             Tile t = new Tile(row, col);
             put(t, p);
+            group.add(p.getGraphics());
         }
         for (int i = 0; i<12; i++) {
             Pawn p = new Pawn(one);
@@ -29,11 +36,13 @@ public class Board {
             int col = i%4 + row%2;
             Tile t = new Tile(row, col);
             put(t, p);
+            group.add(p.getGraphics());
         }
     }
     
     public void put(Tile t, Pawn p) {
         tilesToPieces.put(t, p);
+        p.setTile(t);
     }
 
     public Pawn getPiece(Tile t) {
@@ -93,6 +102,10 @@ public class Board {
         return true;
     }
 
+    public GraphicsGroup getGraphics() {
+        return group;
+    }
+
     public void draw(Graphics g) {
         // Draw the board grid
         for (int row = 0; row < 8; row++) {
@@ -106,26 +119,26 @@ public class Board {
                 g.fillRect(col * tileSize, row * tileSize, tileSize, tileSize);
             }
         }
-    
+
         // Draw pieces on the board
-        for (Tile tile : getTilesWithPieces()) {
-            int row = tile.getRow();
-            int col = tile.getCol();
-            if ((row + col) % 2 != 0) {
-                Pawn piece = getPiece(tile);
-                if (piece != null) {
-                    if (piece.getPlayer().equals(Player.PLAYER_ONE)) {
-                        g.setColor(Color.RED);
-                    } else {
-                        g.setColor(Color.BLACK);
-                    }
-                    // Adjust positioning to center the piece within the tile
-                    int x = col * tileSize + tileSize / 4; // Adjusted x coordinate
-                    int y = row * tileSize + tileSize / 4; // Adjusted y coordinate
-                    g.fillOval(x, y, tileSize / 2, tileSize / 2); // Draw the piece
-                }
-            }
-        }
+        // for (Tile tile : getTilesWithPieces()) {
+        //     int row = tile.getRow();
+        //     int col = tile.getCol();
+        //     if ((row + col) % 2 != 0) {
+        //         Pawn piece = getPiece(tile);
+        //         if (piece != null) {
+        //             if (piece.getPlayer().equals(Player.PLAYER_ONE)) {
+        //                 g.setColor(Color.RED);
+        //             } else {
+        //                 g.setColor(Color.BLACK);
+        //             }
+        //             // Adjust positioning to center the piece within the tile
+        //             int x = col * tileSize + tileSize / 4; // Adjusted x coordinate
+        //             int y = row * tileSize + tileSize / 4; // Adjusted y coordinate
+        //             g.fillOval(x, y, tileSize / 2, tileSize / 2); // Draw the piece
+        //         }
+        //     }
+        // }
     }
     
 }
