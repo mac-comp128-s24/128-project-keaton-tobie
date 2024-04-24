@@ -37,14 +37,6 @@ public class GameManager {
         return true;
     }
 
-    private boolean isValidMove(Move move) {
-        // Implement logic to validate the move
-        // Check if the move is legal according to the rules of the game
-        // Consider factors like piece movement, capturing opponent's pieces, etc.
-        // Return true if the move is valid, false otherwise
-        return false; // Placeholder
-    }
-
     private boolean isGameOver() {
         // Check if any player has no remaining pieces
         boolean playerOneHasPieces = currentPlayerHasPieces(Player.PLAYER_ONE);
