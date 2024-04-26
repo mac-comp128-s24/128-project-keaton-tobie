@@ -2,6 +2,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import edu.macalester.graphics.Ellipse;
+import edu.macalester.graphics.GraphicsGroup;
+import edu.macalester.graphics.GraphicsObject;
+
 public class GameManager {
     private Board board;
     private Player currentPlayer;
@@ -48,7 +52,7 @@ public class GameManager {
 
     /**
      * Generates all possible moves for a given piece on the board
-     * @param piece The piece for which to generate moves
+     * @param piece The piece for which to generate moves 
      * @return A set of all possible moves for the piece
      */
     public Set<Tile> getAllLegalMovesForTile(Tile tile) {
@@ -61,5 +65,34 @@ public class GameManager {
         return null;
       
     }
+
+    public GraphicsGroup RenderPieceatTile(Set<Tile> tiles){
+    GraphicsGroup group = new GraphicsGroup();
+    for( Tile t : tiles){
+        // Render the object at the tile position
+        GraphicsObject go = board.getPiece(t).getGraphics();
+        go.setCenter(t.getTileCenter());
+        group.add(go);
+        }   
+
+    return group;
+}
+
+public GraphicsGroup RenderMoveatTile(Set<Tile> tiles){
+    GraphicsGroup group = new GraphicsGroup();
+    for( Tile t : tiles){
+        // Render the object at the tile position
+    
+        // create an new ellipse centered at the tile position
+        Ellipse ellipse = new Ellipse(0,0, Tile.TILE_SIZE/3, Tile.TILE_SIZE/3);
+        ellipse.setCenter(t.getTileCenter());
+        // add the ellipse to the group
+        group.add(ellipse);
+
+    }   
+
+    return group;
+}
+
 }
 
