@@ -19,7 +19,7 @@ public class Tile {
     }
 
     public Point getTileCenter() {
-        return new Point((row+.5)*TILE_SIZE , (row+.5)*TILE_SIZE);
+        return new Point((col+.5)*TILE_SIZE , (row+.5)*TILE_SIZE);
     }
 
     public int getCol() {

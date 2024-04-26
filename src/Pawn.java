@@ -18,6 +18,7 @@ public class Pawn implements Piece {
 
     public Pawn(Player player) {
         Ellipse e = new Ellipse(0,0,Tile.TILE_SIZE, Tile.TILE_SIZE);
+        e.setFillColor(player.getColor());
         ellipse = e;
         this.player = player; // Initialize the player field
         int playerNum = player.getNum();
