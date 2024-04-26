@@ -9,8 +9,8 @@ public class CheckersApp {
     private Tile selectedTile;
     private boolean gameStarted;
     private CanvasWindow canvas;
-    private final int SCREEN_SIZE = 800;
-    private final int TILE_SIZE = SCREEN_SIZE/8;
+    private static final int SCREEN_SIZE = 800;
+    public static final int TILE_SIZE = SCREEN_SIZE/8;
 
     public CheckersApp() {
         this.board = new Board();
@@ -19,7 +19,7 @@ public class CheckersApp {
         this.selectedTile = null; // Initially no tile is selected
         this.gameStarted = false; // Game starts when player selects a mode
         canvas = new CanvasWindow("checkers", SCREEN_SIZE, SCREEN_SIZE);
-        canvas.setBackground(Color.BLACK);
+        canvas.setBackground(new Color(.9f,.8f,.85f));
         for (int i = 0; i<32; i++) {
             int col = 2*(i%4)+ (i/4)%2;
             int row = i/4 ;
@@ -27,9 +27,10 @@ public class CheckersApp {
             col*=TILE_SIZE;
             Rectangle rect = new Rectangle(col,row,TILE_SIZE,TILE_SIZE);
             rect.setFilled(true);
-            rect.setFillColor(Color.RED);
+            rect.setFillColor(new Color(.3f,.3f,.3f));
             canvas.add(rect);
         }
+        canvas.add(gameManager.RenderPieceatTile(board.getTilesWithPieces()));
         canvas.draw();
         
         // setBackground(Color.WHITE); // Set background color
