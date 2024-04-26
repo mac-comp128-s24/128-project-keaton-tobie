@@ -20,19 +20,19 @@ public class Board {
         for (int i = 0; i<12; i++) {
             Pawn p = new Pawn(zero);
             zero.addPiece(p);
-            int row = i/4 + 1;
-            int col = i%4 + row%2;
-            Tile t = new Tile(row, col);
+            int row = (i % 4)*2;
+            int col = i/4;
+            Tile t = new Tile(col, row);
             put(t, p);
         }
-        for (int i = 0; i<12; i++) {
-            Pawn p = new Pawn(one);
-            one.addPiece(p);
-            int row = i/4 + 6;
-            int col = i%4 + row%2;
-            Tile t = new Tile(row, col);
-            put(t, p);
-        }
+        // for (int i = 0; i<12; i++) {
+        //     Pawn p = new Pawn(one);
+        //     one.addPiece(p);
+        //     int col = 2*(i%4)+ (i/4)%2;
+        //     int row = i/4+6;
+        //     Tile t = new Tile(row, col);
+        //     put(t, p);
+        // }
     }
     
     public void put(Tile t, Pawn p) {

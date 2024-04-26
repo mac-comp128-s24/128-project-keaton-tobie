@@ -22,7 +22,7 @@ public class CheckersApp {
         canvas.setBackground(new Color(.9f,.8f,.85f));
         for (int i = 0; i<32; i++) {
             int col = 2*(i%4)+ (i/4)%2;
-            int row = i/4 ;
+            int row = i/4;
             row*=TILE_SIZE;
             col*=TILE_SIZE;
             Rectangle rect = new Rectangle(col,row,TILE_SIZE,TILE_SIZE);
