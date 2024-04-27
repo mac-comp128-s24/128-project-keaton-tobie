@@ -1,33 +1,29 @@
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import edu.macalester.graphics.GraphicsGroup;
-
-import java.awt.Graphics;
-
 public class Board {
-    private final HashMap<Tile, Pawn> tilesToPieces = new HashMap<>();
+    private Player playerOne = Player.PLAYER_ONE;
+    private Player playerTwo = Player.PLAYER_TWO;
+    private HashMap<Tile, Piece> tilesToPieces = new HashMap<>();
+    // private HashMap<Tile, Piece> tilesListeningPieces = new HashMap<>();
 
     public Board() {
         initializeBoard();
     }
 
     private void initializeBoard() {
-        Player zero = new Player(0, Color.RED);
-        Player one = new Player(1, Color.BLACK);
         for (int i = 0; i<12; i++) {
-            Pawn p = new Pawn(zero);
-            zero.addPiece(p);
+            Pawn p = new Pawn(playerOne);
+            playerOne.addPiece(p);
             int col = (i % 4)*2 + (i/4)%2;
             int row = i/4;
             Tile t = new Tile(col, row);
             put(t, p);
         }
         for (int i = 0; i<12; i++) {
-            Pawn p = new Pawn(one);
-            zero.addPiece(p);
+            Pawn p = new Pawn(playerTwo);
+            playerTwo.addPiece(p);
             int col = (i % 4)*2 + (i/4+1)%2;
             int row = i/4+5;
             Tile t = new Tile(col, row);
@@ -35,12 +31,12 @@ public class Board {
         }
     }
     
-    public void put(Tile t, Pawn p) {
+    public void put(Tile t, Piece p) {
         tilesToPieces.put(t, p);
         p.setTile(t);
     }
 
-    public Pawn getPiece(Tile t) {
+    public Piece getPiece(Tile t) {
         return tilesToPieces.get(t);
     }
 
@@ -67,8 +63,8 @@ public class Board {
     }
 
     public boolean opposed(Tile from, Tile to) {
-        Pawn capturing = tilesToPieces.get(from);
-        Pawn captured = tilesToPieces.get(to);
+        Piece capturing = tilesToPieces.get(from);
+        Piece captured = tilesToPieces.get(to);
         // Check if both capturing and captured are not null, and they belong to different players
         return (capturing != null && captured != null && !capturing.getPlayer().equals(captured.getPlayer()));
     }

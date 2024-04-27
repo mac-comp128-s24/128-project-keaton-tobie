@@ -3,16 +3,22 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Player {
-    public static final Player PLAYER_ONE = new Player(0, Color.RED); // Example initialization
-    public static final Player PLAYER_TWO = new Player(1, Color.BLACK); // Example initialization
+    public static final Player PLAYER_ONE = new Player(0, new Color(255,215,0)); // Example initialization
+    public static final Player PLAYER_TWO = new Player(1, new Color(30,211,236)); // Example initialization
 
     private Set<Piece> pieces;
     private int playerNum;
+    private Tile direction;
     private Color color;
     private Board board; // Reference to the board
 
     public Player(int playerNum, Color color) {
         this.playerNum = playerNum;
+        if (playerNum==0) {
+            direction = new Tile(0,1);
+        } else {
+            direction = new Tile(0,-1);
+        }
         this.color = color;
         this.pieces = new HashSet<>();
     }
@@ -21,6 +27,17 @@ public class Player {
     // Setter method for Board
     public void setBoard(Board board) {
         this.board = board;
+    }
+
+    public Tile direction(Tile t) {
+        return t.move(direction);
+    }
+
+    public Tile direction(Tile t, int i) {
+        for (int j = 0; j < i; j++) {
+            t = t.move(direction);
+        }
+        return t;
     }
 
     public int getNum() {
