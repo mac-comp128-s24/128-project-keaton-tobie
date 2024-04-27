@@ -96,5 +96,9 @@ public class Board {
         }
         return true;
     }
+
+    public Tile getTile(int row, int col) {
+        return new Tile(row, col);
+    }
     
 }

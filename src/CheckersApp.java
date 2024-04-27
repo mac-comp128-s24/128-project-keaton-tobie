@@ -1,8 +1,12 @@
 import java.awt.Color;
+import java.awt.geom.Point2D;
+
 import edu.macalester.graphics.CanvasWindow;
+import edu.macalester.graphics.Point;
 import edu.macalester.graphics.Rectangle;
 
 public class CheckersApp {
+    private Piece piece;
     private Board board;
     private GameManager gameManager;
     private Player currentPlayer;
@@ -20,6 +24,9 @@ public class CheckersApp {
         this.gameStarted = false; // Game starts when player selects a mode
         canvas = new CanvasWindow("checkers", SCREEN_SIZE, SCREEN_SIZE);
         canvas.setBackground(new Color(.9f,.8f,.85f));
+        canvas.onClick(event -> {
+            handleClick(event.getPosition());
+        });
         for (int i = 0; i<32; i++) {
             int col = 2*(i%4)+ (i/4)%2;
             int row = i/4;
@@ -33,67 +40,58 @@ public class CheckersApp {
         canvas.add(gameManager.RenderPieceatTile(board.getTilesWithPieces()));
         canvas.draw();
         
-        // setBackground(Color.WHITE); // Set background color
-        // setFocusable(true); // Allow panel to receive keyboard focus
-        // addMouseListener(new MouseAdapter() {
-        //     @Override
-        //     public void mouseClicked(MouseEvent e) {
-        //         handleMouseClick(e);
-        //     }
-        // });
+    }
+    
+    // Method to handle click events
+    private void handleClick(Point point) {
+        // Calculate the row and column from clickPosition
+        int col = (int)(point.getX() / TILE_SIZE);
+        int row = (int)(point.getY() / TILE_SIZE);
+        
+        // Get the Tile at the clicked position`
+        Tile clickedTile = piece.getTile();
+        
+        // Check if the tile has a piece, and it belongs to the current player
+        if (clickedTile.hasPiece() && clickedTile.getPiece().getPlayer() == currentPlayer) {
+            selectedTile = clickedTile;
+            // Highlight the selected tile
+            clickedTile.getRectangle().setFillColor(new Color(1,0,0,0.5f));
+        } else if (selectedTile != null) {
+            // Remove highlight from previously selected tile
+            selectedTile.getRectangle().setFillColor(null);
+            
+            // Check if the move is valid
+            Set<Tile> validMoves = gameManager.getAllLegalMovesForTile(selectedTile);
+            if (validMoves.contains(clickedTile)) {
+                // Move the piece to the new tile
+                // This requires a method to actually move the piece in your board or gameManager class
+                board.movePiece(selectedTile, clickedTile);
+                
+                // Switch player
+                gameManager.switchPlayer();
+                currentPlayer = gameManager.getCurrentPlayer();
+                
+                // Update the game state and redraw the board
+                selectedTile = null;
+                canvas.removeAll();
+                drawBoardAndPieces();
+                canvas.draw();
+            }
+        }
+        
+        // Redraw the board
+        canvas.draw();
     }
 
-    // @Override
-    // protected void paintComponent(Graphics g) {
-    //     super.paintComponent(g);
-    //     // Draw the game board if game has started
-    //     // if (gameStarted) {
-    //         board.draw(g);
-    //     // } else {
-    //         // Draw the menu or mode selection screen
-    //         // You can implement this part as needed
-    //     // }
-    // }
-
-    // private void handleMouseClick(MouseEvent e) {
-    //     if (!gameStarted) {
-    //         // Handle mode selection
-    //         // For example, if the player clicks on a button to select a mode:
-    //         gameStarted = true;
-    //         // currentPlayer = // Set the current player based on the selected mode (e.g., bot or local player)
-    //         board.initializeBoard(); // Set up the game board
-    //     } else {
-    //         // Translate mouse coordinates to board coordinates
-    //         int x = e.getX();
-    //         int y = e.getY();
-    //         int col = x / Tile.TILE_SIZE;
-    //         int row = y / Tile.TILE_SIZE;
-    //         Tile clickedTile = new Tile(row, col);
     
-    //         // Perform game logic here
-    //         // For example:
-    //         // if (selectedTile == null) {
-    //         //     // Handle selecting a piece
-    //         // } else {
-    //         //     // Handle moving the piece
-    //         // }
-    
-    //         // Repaint the panel to update the display
-    //         repaint();
-    //     }
-    // }
+    // Method to draw the board and pieces
+    private void drawBoardAndPieces() {
+        // Draw the checkers board and pieces similar to what's in your constructor
+        // ...
+    }
 
-    
 
-    // private static void createAndShowGui() {
-    //     JFrame frame = new JFrame("Checkers Game");
-    //     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    //     CheckersApp app = new CheckersApp();
-    //     frame.add(app);
-    //     frame.pack(); // Pack components within the frame
-    //     frame.setLocationRelativeTo(null); // Center the frame on the screen
-    //     frame.setVisible(true);
-    // }
+
     public static void main(String[] args) {
         CheckersApp CheckersApp = new CheckersApp();
     }
