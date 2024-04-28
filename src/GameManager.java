@@ -65,7 +65,11 @@ public class GameManager {
     }
             
     private void switchPlayer() {
-        currentPlayer = (currentPlayer == Player.PLAYER_ONE) ? Player.PLAYER_TWO : Player.PLAYER_ONE;
+        if (currentPlayer.equals(Player.PLAYER_ONE)) {
+            currentPlayer = Player.PLAYER_TWO;
+        } else {
+            currentPlayer = Player.PLAYER_ONE;
+        }
     }
 
     /**
