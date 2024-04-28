@@ -14,6 +14,10 @@ public class GameManager {
     public GameManager() {
         this.board = new Board();
         this.currentPlayer = Player.PLAYER_ONE;
+        for (Tile t : board.getTilesWithPieces()) {
+            Set<Tile> dm = determineMoves(t);
+            board.getPiece(t).setLegalMoves(dm);
+        }
     }
    
     /**
@@ -28,7 +32,7 @@ public class GameManager {
             moves = p.getMoves();
         } else {
             currentPiece = null;
-            moves = null;
+            moves = new HashSet<>();
         }
         return currentPiece;
     }
@@ -46,12 +50,21 @@ public class GameManager {
         return moves.contains(t);
     }
 
-    public void moveTo(Tile t) {
-        board.put(t, currentPiece);
+    /**
+     * Only call this if we know the current piece can move to tile. 
+     * Moves the current piece to tile, then updates other pieces moves
+     * @param tile Tile to move currently selected piece to 
+     */
+    public void moveTo(Tile tile) {
+        board.put(tile, currentPiece);
+        for (Tile t : board.getTilesWithPieces()) {
+            Set<Tile> dm = determineMoves(t);
+            board.getPiece(t).setLegalMoves(dm);
+        }
+        switchPlayer();
     }
             
     private void switchPlayer() {
-        isGameOver();
         currentPlayer = (currentPlayer == Player.PLAYER_ONE) ? Player.PLAYER_TWO : Player.PLAYER_ONE;
     }
 
@@ -63,17 +76,17 @@ public class GameManager {
     public GraphicsGroup getMoveGraphics(Tile tile) {
         Piece currentpiece = board.getPiece(tile);
         if (currentpiece.getPlayer() == currentPlayer) {
-            moves = currentpiece.getMoves();
-            return RenderMoveAtTile(moves);
+            moves = currentpiece.getLegalMoves();
+            return renderMoveAtTile(moves);
         }
         return null;
     }
 
     public GraphicsGroup getPieceGraphics() {
-        return RenderPieceAtTile(board.getTilesWithPieces());
+        return renderPieceAtTile(board.getTilesWithPieces());
     }
 
-    private GraphicsGroup RenderPieceAtTile(Set<Tile> tiles) {
+    private GraphicsGroup renderPieceAtTile(Set<Tile> tiles) {
         GraphicsGroup group = new GraphicsGroup();
         for (Tile t : tiles) {
             // Render the object at the tile position
@@ -84,7 +97,7 @@ public class GameManager {
         return group;
     }
 
-    private GraphicsGroup RenderMoveAtTile(Set<Tile> tiles) {
+    private GraphicsGroup renderMoveAtTile(Set<Tile> tiles) {
         GraphicsGroup group = new GraphicsGroup();
         for( Tile t : tiles) {
             // create an new ellipse centered at the tile position
@@ -107,6 +120,42 @@ public class GameManager {
         }
           // If neither player has won and the current player cannot make any moves, it's a stalemate
         return true;
+    }
+
+    private Set<Tile> legalMoves(Tile t) {
+        Piece p = board.getPiece(t);
+        Set<Tile> mm = p.getMoves();
+        Set<Tile> tm = t.moves(mm);
+        Set<Tile> vm = board.validate(tm);
+        Set<Tile> legalMoves = board.unobstructed(t, vm);
+        return legalMoves;
+    }
+
+    private Set<Tile> legalCaptures(Tile t) {
+        Piece p = board.getPiece(t);
+        Set<Tile> cc = p.getCaptures();
+        Set<Tile> tc = t.moves(cc);
+        Set<Tile> vc = board.validate(tc);
+        Set<Tile> legalCaptures;
+        if (p.isPawn()) {
+            legalCaptures = board.obstructed(t, vc);
+        } else {
+            legalCaptures = board.unobstructed(t, vc);
+        }
+        return legalCaptures;
+    }
+
+    private Set<Tile> determineMoves(Tile t) {
+        Set<Tile> determinedMoves = new HashSet<>();
+        Set<Tile> legalMoves = legalMoves(t);
+        Set<Tile> legalCaptures = legalCaptures(t);
+        determinedMoves = legalCaptures;
+        for (Tile m : legalMoves) {
+            if (!board.occupied(m)) {
+                determinedMoves.add(m);
+            }
+        }
+        return determinedMoves;
     }
 }
 

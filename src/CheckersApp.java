@@ -27,7 +27,7 @@ public class CheckersApp {
         selectedTile = new Tile(col, row);
         renderSelectedTile();
         if (gameManager.canMoveTo(selectedTile)) {
-            gameManager.moveTo(selectedTile); 
+            gameManager.moveTo(selectedTile);
             renderPieces();
         } else {
             selectedPiece = gameManager.getPieceAt(selectedTile);
@@ -51,7 +51,9 @@ public class CheckersApp {
             }
             return;
         }
-        canvas.remove(movesGroup);
+        if (movesGroup!=null) {
+            canvas.remove(movesGroup);
+        }
         movesGroup = gameManager.getMoveGraphics(selectedTile);
         canvas.add(movesGroup);
     }
@@ -76,7 +78,7 @@ public class CheckersApp {
         canvas = new CanvasWindow("checkers", SCREEN_SIZE, SCREEN_SIZE);
         canvas.setBackground(new Color(179,184,189));
         for (int i = 0; i<32; i++) {
-            int col = 2*(i%4)+ (i/4)%2;
+            int col = 2*(i%4)+ (1 + i/4)%2;
             int row = i/4;
             row*=TILE_SIZE;
             col*=TILE_SIZE;

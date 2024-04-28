@@ -16,7 +16,7 @@ public class Board {
         for (int i = 0; i<12; i++) {
             Pawn p = new Pawn(playerOne);
             playerOne.addPiece(p);
-            int col = (i % 4)*2 + (i/4)%2;
+            int col = (i % 4)*2 + (i/4 + 1)%2;
             int row = i/4;
             Tile t = new Tile(col, row);
             put(t, p);
@@ -24,7 +24,7 @@ public class Board {
         for (int i = 0; i<12; i++) {
             Pawn p = new Pawn(playerTwo);
             playerTwo.addPiece(p);
-            int col = (i % 4)*2 + (i/4+1)%2;
+            int col = (i % 4)*2 + (i/4)%2;
             int row = i/4+5;
             Tile t = new Tile(col, row);
             put(t, p);
@@ -33,7 +33,6 @@ public class Board {
     
     public void put(Tile t, Piece p) {
         tilesToPieces.put(t, p);
-        p.setTile(t);
     }
 
     public Piece getPiece(Tile t) {
@@ -52,6 +51,11 @@ public class Board {
         return !(t.getCol()>8||t.getRow()<1||t.getRow()>8||t.getCol()<1);
     }
 
+    /**
+     * returns the tiles from the set that are on the board
+     * @param tiles a set of tiles
+     * @return a set of tiles that are on the board
+     */
     public Set<Tile> validate(Set<Tile> tiles) {
         Set<Tile> validTiles = new HashSet<>();
         for (Tile t : tiles) {
@@ -74,7 +78,7 @@ public class Board {
         return (tilesToPieces.get(t)!=null);
     }
 
-    public Set<Tile> pruneObstructed(Tile t, Set<Tile> moves) {
+    public Set<Tile> unobstructed(Tile t, Set<Tile> moves) {
         Set<Tile> unobstructedMoves = new HashSet<>();
         for (Tile move : moves) {
             Set<Tile> potentialObstruction = t.movesBetween(move);
@@ -84,6 +88,22 @@ public class Board {
         }
         return unobstructedMoves;
     }
+
+    public Set<Tile> obstructed(Tile t, Set<Tile> moves) {
+        Set<Tile> obstructedMoves = new HashSet<>();
+        for (Tile move : moves) {
+            Set<Tile> potentialObstruction = t.movesBetween(move);
+            if (potentialObstruction.size()==1) {
+                for (Tile po : potentialObstruction) {
+                    if (opposed(t, po)) {
+                        obstructedMoves.add(po);
+                    }
+                }
+            }
+        }
+        return obstructedMoves;
+    }
+
     public boolean unobstructed(Set<Tile> moves) {
         for (Tile m : moves) {
             if (occupied(m)) {
@@ -91,10 +111,6 @@ public class Board {
             }
         }
         return true;
-    }
-
-    public Tile getTile(int row, int col) {
-        return new Tile(row, col);
     }
     
 }

@@ -10,7 +10,6 @@ public class Player {
     private int playerNum;
     private Tile direction;
     private Color color;
-    private Board board; // Reference to the board
 
     public Player(int playerNum, Color color) {
         this.playerNum = playerNum;
@@ -23,12 +22,6 @@ public class Player {
         this.pieces = new HashSet<>();
     }
     
-
-    // Setter method for Board
-    public void setBoard(Board board) {
-        this.board = board;
-    }
-
     public Tile direction(Tile t) {
         return t.move(direction);
     }
@@ -59,11 +52,6 @@ public class Player {
 
     public void removePiece(Piece p) {
         pieces.remove(p);
-    }
-
-    // You can now use the board reference here as needed
-    public Board getBoard() {
-        return board;
     }
 
     @Override
