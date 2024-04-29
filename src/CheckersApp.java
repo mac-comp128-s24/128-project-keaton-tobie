@@ -1,6 +1,7 @@
 import java.awt.Color;
 import edu.macalester.graphics.CanvasWindow;
 import edu.macalester.graphics.GraphicsGroup;
+import edu.macalester.graphics.GraphicsObject;
 import edu.macalester.graphics.Point;
 import edu.macalester.graphics.Rectangle;
 
@@ -9,9 +10,8 @@ public class CheckersApp {
     private CanvasWindow canvas;
     private GraphicsGroup piecesGroup;
     private GraphicsGroup movesGroup;
+    private GraphicsObject selectedTileGraphic;
     private Tile selectedTile;
-    private Piece selectedPiece;
-    private Rectangle selectedRect;
     private static final int SCREEN_SIZE = 800;
     public static final int TILE_SIZE = SCREEN_SIZE/8;
 
@@ -24,48 +24,63 @@ public class CheckersApp {
     private void handleClick(Point point) {
         int col = (int)(point.getX() / TILE_SIZE);
         int row = (int)(point.getY() / TILE_SIZE);
-        selectedTile = new Tile(col, row);
-        renderSelectedTile();
-        if (gameManager.canMoveTo(selectedTile)) {
-            gameManager.moveTo(selectedTile);
+        Tile newTile = new Tile(col, row);
+        Move selectedMove = null;
+        if (selectedTile!=null) {
+            System.out.println("trying a move");
+            selectedMove = new Move(selectedTile, newTile);
+        }
+        selectedTile = newTile;
+        renderTile();
+        if (gameManager.canMakeMove(selectedMove)) {
+            gameManager.makeMove(selectedMove);
+            selectedTile = null;
+            unrenderTile();
             renderPieces();
         } else {
-            selectedPiece = gameManager.getPieceAt(selectedTile);
             renderMoves();
         }
         canvas.draw();
     }
 
+    private void renderTile() {
+        unrenderTile();
+        selectedTileGraphic = gameManager.renderTile(selectedTile);
+        canvas.add(selectedTileGraphic);
+    }
+
+    private void unrenderTile() {
+        if (selectedTileGraphic != null) {
+            canvas.remove(selectedTileGraphic);
+        }
+        selectedTileGraphic = null;
+    }
+
     private void renderPieces() {
-        canvas.remove(movesGroup);
-        movesGroup = null;
-        canvas.remove(piecesGroup);
-        piecesGroup = gameManager.getPieceGraphics();
+        unrenderMoves();
+        unrenderPieces();
+        piecesGroup = gameManager.renderPieces();
         canvas.add(piecesGroup);
     }
 
-    private void renderMoves() {
-        if (selectedPiece==null) {
-            if (movesGroup!=null) {
-                canvas.remove(movesGroup);
-            }
-            return;
+    private void unrenderPieces() {
+        if (piecesGroup!=null) {
+            canvas.remove(piecesGroup);
         }
-        if (movesGroup!=null) {
+        piecesGroup = null;
+    }    
+
+    private void unrenderMoves() {
+        if (movesGroup != null) {
             canvas.remove(movesGroup);
         }
-        movesGroup = gameManager.getMoveGraphics(selectedTile);
-        canvas.add(movesGroup);
+        movesGroup = null;
     }
 
-    private void renderSelectedTile() {
-        if (selectedRect==null) {
-            selectedRect = new Rectangle(0,0,TILE_SIZE,TILE_SIZE);
-            selectedRect.setFilled(false);
-            selectedRect.setStrokeColor(new Color(255,82,191));
-            canvas.add(selectedRect);
-        }
-        selectedRect.setCenter(selectedTile.getTileCenter());
+    private void renderMoves() {
+        unrenderMoves();
+        movesGroup = gameManager.getLegalMovesFrom(selectedTile);
+        canvas.add(movesGroup);
     }
 
     private void setupListeners() {
@@ -87,8 +102,7 @@ public class CheckersApp {
             rect.setFillColor(new Color(39,33,46));
             canvas.add(rect);
         }
-        piecesGroup = gameManager.getPieceGraphics();
-        canvas.add(piecesGroup);
+        renderPieces();
         canvas.draw();
     }
 

@@ -1,8 +1,5 @@
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
-
-import edu.macalester.graphics.Point;
 
 public class Tile {
     private int row;
@@ -16,10 +13,6 @@ public class Tile {
 
     public int getRow() {
         return row;
-    }
-
-    public Point getTileCenter() {
-        return new Point((col+.5)*TILE_SIZE , (row+.5)*TILE_SIZE);
     }
 
     public int getCol() {
@@ -56,39 +49,44 @@ public class Tile {
      * @param t The other tile
      * @return A set of tiles between this tile and the other tile
      */
-    public Set<Tile> movesBetween(Tile t) {
+    public static Set<Tile> movesBetween(Tile a, Tile b) {
         Set<Tile> between = new HashSet<>();
-        int dCol = col - t.getCol();
-        int dRow = row - t.getRow();
+        int dCol = a.getCol() - b.getCol();
+        int dRow = a.getRow() - b.getRow();
         if (dCol == 0) {
             for (int i = 1; i < Math.abs(dRow); i++) {
-                between.add(new Tile(col, t.getRow() + i * Integer.signum(dRow)));
+                between.add(new Tile(a.getCol(), b.getRow() + i * Integer.signum(dRow)));
             }
         } else if (dRow == 0) {
             for (int i = 1; i < Math.abs(dCol); i++) {
-                between.add(new Tile(t.getCol() + i * Integer.signum(dCol), row));
+                between.add(new Tile(b.getCol() + i * Integer.signum(dCol), a.getRow()));
             }
         } else if (Math.abs(dCol) == Math.abs(dRow)) {
             for (int i = 1; i < Math.abs(dRow); i++) {
-                between.add(new Tile(t.getCol() + i * Integer.signum(dCol), t.getRow() + i * Integer.signum(dRow)));
+                between.add(new Tile(a.getCol() + i * Integer.signum(dCol), b.getRow() + i * Integer.signum(dRow)));
             }
         }
         return between;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
         Tile tile = (Tile) obj;
         return row == tile.row && col == tile.col;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(row, col);
+        int result = 17;
+        result = 31 * result + row;
+        result = 31 * result + col;
+        return result;
     }
-
-   
 }
 

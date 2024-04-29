@@ -1,53 +1,123 @@
-import java.util.HashSet;
+import java.awt.Color;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import edu.macalester.graphics.Ellipse;
 import edu.macalester.graphics.GraphicsGroup;
 import edu.macalester.graphics.GraphicsObject;
+import edu.macalester.graphics.GraphicsText;
+import edu.macalester.graphics.Point;
+import edu.macalester.graphics.Rectangle;
 
 public class GameManager {
     private Board board;
-    private Player currentPlayer;
-    private Piece currentPiece;
-    private Set<Tile> moves = new HashSet<>();
+    private MoveValidator mv = new MoveValidator();
+    private Set<Move> legalMoves;
 
     public GameManager() {
         this.board = new Board();
-        this.currentPlayer = Player.PLAYER_ONE;
-        for (Tile t : board.getTilesWithPieces()) {
-            Set<Tile> dm = determineMoves(t);
-            board.getPiece(t).setLegalMoves(dm);
-        }
-    }
-   
-    /**
-     * returns the piece at Tile t
-     * @param t Tile
-     * @return piece at t, null if no piece
-     */
-    public Piece getPieceAt(Tile t) {
-        Piece p = board.getPiece(t);
-        if (p!=null&&playerControlsPiece(p)) {
-            currentPiece = p;
-            moves = p.getMoves();
-        } else {
-            currentPiece = null;
-            moves = new HashSet<>();
-        }
-        return currentPiece;
-    }
-    
-    private boolean playerControlsPiece(Piece p) {
-        return p.getPlayer().equals(currentPlayer);
+        getLegalMoves();
+
     }
 
-    private boolean currentPlayerHasPieces(Player player) {
-        Set<Piece> playerPieces = player.getPieces();
-        return !playerPieces.isEmpty();
+    public GraphicsGroup renderPieces() {
+        GraphicsGroup g = new GraphicsGroup();
+        for (Entry<Tile,ChessPiece> e : board.getWhiteTiles().entrySet()) {
+            GraphicsObject go = renderPiece(e.getValue(), true);
+            go.setCenter(getTileCenter(e.getKey()));
+            g.add(go);
+        }
+        for (Entry<Tile,ChessPiece> e : board.getBlackTiles().entrySet()) {
+            GraphicsObject go = renderPiece(e.getValue(), false);
+            go.setCenter(getTileCenter(e.getKey()));
+            g.add(go);
+        }
+        return g;
+    }
+
+    public GraphicsObject renderTile(Tile t) {
+        if (t == null) {
+            return null;
+        }
+        Rectangle r = new Rectangle(0,0,CheckersApp.TILE_SIZE,CheckersApp.TILE_SIZE);
+        r.setFilled(false);
+        r.setStrokeColor(new Color(255,82,191));
+        r.setCenter(getTileCenter(t));
+        return r;
+    }
+
+    private void getLegalMoves() {
+        legalMoves = mv.getLegalMoves(board);
+    }
+
+    public GraphicsGroup getLegalMovesFrom(Tile t) {
+        Set<Move> lmf = mv.getLegalMovesFrom(t, board);
+        return renderMoves(lmf);
+    }
+
+    private GraphicsGroup renderMoves(Set<Move> moves) {
+        GraphicsGroup group = new GraphicsGroup();
+        for (Move m : moves) {
+            // create an new ellipse centered at the tile position
+            Ellipse ellipse = new Ellipse(0,0, Tile.TILE_SIZE/3, Tile.TILE_SIZE/3);
+            ellipse.setCenter(getTileCenter(m.end));
+            // add the ellipse to the group
+            group.add(ellipse);
+        }
+        return group;
+    }
+
+    private Point getTileCenter(Tile t) {
+        int col = t.getCol();
+        int row = t.getRow();
+        return new Point((col+.5)*CheckersApp.TILE_SIZE , (row+.5)*CheckersApp.TILE_SIZE);
+    }
+
+    private GraphicsObject renderPiece(ChessPiece p, boolean white) {
+        GraphicsText t = new GraphicsText();
+        String c;
+        if (white) {
+            c = "w";
+        } else {
+            c = "b";
+        }
+        switch (p.getType()) {
+            case PAWN: 
+                t = new GraphicsText(c + "p");
+                break;
+            case ROOK: 
+                t = new GraphicsText(c + "R");
+                break;
+            case KNIGHT: 
+                t = new GraphicsText(c + "N");
+                break;
+            case BISHOP: 
+                t = new GraphicsText(c + "B");
+                break;
+            case QUEEN: 
+                t = new GraphicsText(c + "Q");
+                break;
+            case KING: 
+                t = new GraphicsText(c + "K");
+                break;
+            case CHECKER: 
+                t = new GraphicsText(c + "aaaaaaa");
+                break;
+        }
+        return t;
     }
     
-    public boolean canMoveTo(Tile t) {
-        return moves.contains(t);
+    public boolean canMakeMove(Move m) {
+        if (m==null) {
+            System.out.println("move was null");
+            return false;
+        }
+        if (legalMoves.contains(m)) {
+            System.out.println("legal moves contains move");
+        } else {
+            System.out.println(legalMoves.size());
+        }
+        return legalMoves.contains(m);
     }
 
     /**
@@ -55,111 +125,11 @@ public class GameManager {
      * Moves the current piece to tile, then updates other pieces moves
      * @param tile Tile to move currently selected piece to 
      */
-    public void moveTo(Tile tile) {
-        board.put(tile, currentPiece);
-        for (Tile t : board.getTilesWithPieces()) {
-            Set<Tile> dm = determineMoves(t);
-            board.getPiece(t).setLegalMoves(dm);
-        }
-        switchPlayer();
-    }
-            
-    private void switchPlayer() {
-        if (currentPlayer.equals(Player.PLAYER_ONE)) {
-            currentPlayer = Player.PLAYER_TWO;
-        } else {
-            currentPlayer = Player.PLAYER_ONE;
-        }
+    public void makeMove(Move move) {
+        System.out.println("trying to move");
+        board = board.makeMove(move);
+        getLegalMoves();
     }
 
-    /**
-     * Generates all possible moves for a given piece on the board
-     * @param piece The piece for which to generate moves 
-     * @return A set of all possible moves for the piece
-     */
-    public GraphicsGroup getMoveGraphics(Tile tile) {
-        Piece currentpiece = board.getPiece(tile);
-        if (currentpiece.getPlayer() == currentPlayer) {
-            moves = currentpiece.getLegalMoves();
-            return renderMoveAtTile(moves);
-        }
-        return null;
-    }
-
-    public GraphicsGroup getPieceGraphics() {
-        return renderPieceAtTile(board.getTilesWithPieces());
-    }
-
-    private GraphicsGroup renderPieceAtTile(Set<Tile> tiles) {
-        GraphicsGroup group = new GraphicsGroup();
-        for (Tile t : tiles) {
-            // Render the object at the tile position
-            GraphicsObject go = board.getPiece(t).getGraphics();
-            go.setCenter(t.getTileCenter());
-            group.add(go);
-        }   
-        return group;
-    }
-
-    private GraphicsGroup renderMoveAtTile(Set<Tile> tiles) {
-        GraphicsGroup group = new GraphicsGroup();
-        for( Tile t : tiles) {
-            // create an new ellipse centered at the tile position
-            Ellipse ellipse = new Ellipse(0,0, Tile.TILE_SIZE/3, Tile.TILE_SIZE/3);
-            ellipse.setCenter(t.getTileCenter());
-            // add the ellipse to the group
-            group.add(ellipse);
-        }
-        return group;
-    }
-
-    private boolean isGameOver() {
-        switchPlayer();
-        // Check if any player has no remaining pieces
-        boolean playerOneHasPieces = currentPlayerHasPieces(Player.PLAYER_ONE);
-        boolean playerTwoHasPieces = currentPlayerHasPieces(Player.PLAYER_TWO);
-    
-        if (!playerOneHasPieces || !playerTwoHasPieces) {
-            return true;
-        }
-          // If neither player has won and the current player cannot make any moves, it's a stalemate
-        return true;
-    }
-
-    private Set<Tile> legalMoves(Tile t) {
-        Piece p = board.getPiece(t);
-        Set<Tile> mm = p.getMoves();
-        Set<Tile> tm = t.moves(mm);
-        Set<Tile> vm = board.validate(tm);
-        Set<Tile> legalMoves = board.unobstructed(t, vm);
-        return legalMoves;
-    }
-
-    private Set<Tile> legalCaptures(Tile t) {
-        Piece p = board.getPiece(t);
-        Set<Tile> cc = p.getCaptures();
-        Set<Tile> tc = t.moves(cc);
-        Set<Tile> vc = board.validate(tc);
-        Set<Tile> legalCaptures;
-        if (p.isPawn()) {
-            legalCaptures = board.obstructed(t, vc);
-        } else {
-            legalCaptures = board.unobstructed(t, vc);
-        }
-        return legalCaptures;
-    }
-
-    private Set<Tile> determineMoves(Tile t) {
-        Set<Tile> determinedMoves = new HashSet<>();
-        Set<Tile> legalMoves = legalMoves(t);
-        Set<Tile> legalCaptures = legalCaptures(t);
-        determinedMoves = legalCaptures;
-        for (Tile m : legalMoves) {
-            if (!board.occupied(m)) {
-                determinedMoves.add(m);
-            }
-        }
-        return determinedMoves;
-    }
 }
 

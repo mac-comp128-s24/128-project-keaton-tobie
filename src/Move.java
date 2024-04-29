@@ -1,38 +1,28 @@
 public class Move {
-    private static Piece piece; // The piece being moved
-    private Tile start; // The starting position of the move
-    private Tile end; // The ending position of the move
+    public Tile start;
+    public Tile end; 
 
-    // Constructor
-    public Move(Piece piece, Tile start, Tile end) {
-        this.piece = piece;
+    public Move(Tile start, Tile end) {
         this.start = start;
         this.end = end;
     }
-
-    // Getters and setters
-    public Piece getPiece() {
-        return piece;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Move move = (Move) obj;
+        return (start.equals(move.start) && end.equals(move.end));
     }
-
-    public void setPiece(Piece piece) {
-        Move.piece = piece;
-    }
-
-    public Tile getStart() {
-        return start;
-    }
-
-    public void setStart(Tile start) {
-        this.start = start;
-    }
-
-    public Tile getEnd() {
-        return end;
-    }
-
-    public void setEnd(Tile end) {
-        this.end = end;
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + (start != null ? start.hashCode() : 0);
+        result = 31 * result + (end != null ? end.hashCode() : 0);
+        return result;
     }
 }
 
