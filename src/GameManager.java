@@ -75,12 +75,8 @@ public class GameManager {
 
     private GraphicsObject renderPiece(ChessPiece p, boolean white) {
         GraphicsText t = new GraphicsText();
-        String c;
-        if (white) {
-            c = "w";
-        } else {
-            c = "b";
-        }
+        String c = "";
+        
         switch (p.getType()) {
             case PAWN: 
                 t = new GraphicsText(c + "p");
@@ -104,6 +100,14 @@ public class GameManager {
                 t = new GraphicsText(c + "aaaaaaa");
                 break;
         }
+        if (white) {
+            c = "";
+            t.setFillColor(Color.WHITE);
+        } else {
+            c = "";
+            t.setFillColor(Color.BLACK);
+        }
+        t.setScale(4.0);
         return t;
     }
     

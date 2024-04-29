@@ -142,28 +142,5 @@ public class Board {
     public boolean getCheck() {
         return check;
     }
-
-    public boolean getFriend(Tile t) {
-        return playingPieces.containsKey(t);
-    }
-
-    public static boolean validate(Tile t) {
-        return !(t.getCol()>8||t.getRow()<1||t.getRow()>8||t.getCol()<1);
-    }
-
-    /**
-     * returns the tiles from the set that are on the board
-     * @param tiles a set of tiles
-     * @return a set of tiles that are on the board
-     */
-    public Set<Tile> validate(Set<Tile> tiles) {
-        Set<Tile> validTiles = new HashSet<>();
-        for (Tile t : tiles) {
-            if (validate(t)) {
-                validTiles.add(t);
-            }
-        }
-        return validTiles;
-    }
     
 }
