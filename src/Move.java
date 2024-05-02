@@ -1,10 +1,17 @@
-public class Move {
+public class Move implements Comparable{
     public Tile start;
-    public Tile end; 
+    public Tile end;
+    public double score = 0;
 
     public Move(Tile start, Tile end) {
         this.start = start;
         this.end = end;
+    }
+
+    public Move(Tile start, Tile end, double score) {
+        this.start = start;
+        this.end = end;
+        this.score = score;
     }
     @Override
     public boolean equals(Object obj) {
@@ -24,5 +31,10 @@ public class Move {
         result = 31 * result + (end != null ? end.hashCode() : 0);
         return result;
     }
+    @Override
+    public int compareTo(Object o) {
+        return Double.compare(this.score, ((Move)o).score);
+    }
+
 }
 

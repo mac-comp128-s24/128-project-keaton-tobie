@@ -114,6 +114,23 @@ public class Board {
         if (!movedPiece.getMoved()) {
             movedPiece = new ChessPiece(movedPiece.getType(),true);
         }
+        if (movedPiece.getType().equals(PieceType.KING)) {
+            //castling
+            int dm = m.end.getCol()-m.start.getCol();
+            if (Math.abs(dm)>1) {
+                if (dm<0) {
+                    Tile rookTile = new Tile(0,m.end.getRow());
+                    ChessPiece rook = ppcopy.get(rookTile);
+                    ppcopy.remove(rookTile);
+                    ppcopy.put(m.end.move(new Tile(1,0)),rook);
+                } else {
+                    Tile rookTile = new Tile(7,m.end.getRow());
+                    ChessPiece rook = ppcopy.get(rookTile);
+                    ppcopy.remove(rookTile);
+                    ppcopy.put(m.end.move(new Tile(-1,0)),rook);
+                }
+            }
+        }
         ppcopy.remove(m.start);
         wpcopy.remove(m.end);
         ppcopy.put(m.end,movedPiece);

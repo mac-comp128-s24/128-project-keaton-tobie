@@ -1,5 +1,7 @@
 import java.awt.Color;
 import java.util.Set;
+import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Map.Entry;
 
 import edu.macalester.graphics.Ellipse;
@@ -12,10 +14,14 @@ import edu.macalester.graphics.Rectangle;
 public class GameManager {
     private Board board;
     private MoveValidator mv = new MoveValidator();
-    private Set<Move> legalMoves;
+    private List<Move> legalMoves;
+    private ArrayDeque<Board> priorBoards;
+    private ArrayDeque<Board> futureBoards;
 
     public GameManager() {
         this.board = new Board();
+        priorBoards = new ArrayDeque<>();
+        futureBoards = new ArrayDeque<>();
         getLegalMoves();
 
     }
@@ -51,11 +57,11 @@ public class GameManager {
     }
 
     public GraphicsGroup getLegalMovesFrom(Tile t) {
-        Set<Move> lmf = mv.getLegalMovesFrom(t, board);
+        List<Move> lmf = mv.getLegalMovesFrom(t, board);
         return renderMoves(lmf);
     }
 
-    private GraphicsGroup renderMoves(Set<Move> moves) {
+    private GraphicsGroup renderMoves(List<Move> moves) {
         GraphicsGroup group = new GraphicsGroup();
         for (Move m : moves) {
             // create an new ellipse centered at the tile position
@@ -131,7 +137,27 @@ public class GameManager {
      */
     public void makeMove(Move move) {
         System.out.println("trying to move");
+        priorBoards.push(board);
         board = board.makeMove(move);
+        futureBoards.clear();
+        getLegalMoves();
+    }
+
+    public void undoMove() {
+        if (priorBoards.isEmpty()) {
+            return;
+        }
+        futureBoards.push(board);
+        board = priorBoards.pop();
+        getLegalMoves();
+    }
+
+    public void redoMove() {
+        if (futureBoards.isEmpty()) {
+            return;
+        }
+        priorBoards.push(board);
+        board = futureBoards.pop();
         getLegalMoves();
     }
 

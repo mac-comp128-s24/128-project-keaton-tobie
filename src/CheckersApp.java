@@ -1,9 +1,13 @@
 import java.awt.Color;
+import java.util.Set;
+
 import edu.macalester.graphics.CanvasWindow;
 import edu.macalester.graphics.GraphicsGroup;
 import edu.macalester.graphics.GraphicsObject;
 import edu.macalester.graphics.Point;
 import edu.macalester.graphics.Rectangle;
+import edu.macalester.graphics.events.Key;
+import edu.macalester.graphics.events.ModifierKey;
 
 public class CheckersApp {
     private GameManager gameManager;
@@ -41,6 +45,18 @@ public class CheckersApp {
             renderMoves();
         }
         canvas.draw();
+    }
+
+    private void handleKeyPress(Key key, Set<ModifierKey> modifiers) {
+        if (key.equals(Key.Z) && modifiers.contains(ModifierKey.CONTROL)) {
+            if (modifiers.contains(ModifierKey.SHIFT)) {
+                gameManager.redoMove();
+            } else {
+                gameManager.undoMove();
+            }
+            renderPieces();
+            canvas.draw();
+        }
     }
 
     private void renderTile() {
@@ -86,6 +102,9 @@ public class CheckersApp {
     private void setupListeners() {
         canvas.onMouseDown(event -> {
             handleClick(event.getPosition());
+        });
+        canvas.onKeyDown(event -> {
+            handleKeyPress(event.getKey(), event.getModifiers());
         });
     }
 
